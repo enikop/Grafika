@@ -19,10 +19,6 @@ void set_draw_color(Color *color, SDL_Renderer *renderer)
 
 void init_window(SDL_Renderer *renderer, SDL_Rect *rectangles, Color *color_back, Color *palette)
 {
-    SDL_Event event;
-    int db = 0;
-    int x0 = -1, y0 = -1, x1 = -1, y1 = -1;
-    bool need_run;
 
     set_draw_color(color_back, renderer);
     SDL_RenderClear(renderer);
