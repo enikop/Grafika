@@ -91,9 +91,9 @@ void reshape(GLsizei width, GLsizei height)
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glFrustum(
-        -.08, .08,
-        -.06, .06,
-        .1, 10
+        -.008, .008,
+        -.006, .006,
+        .01, 20
     );
 }
 
@@ -126,10 +126,19 @@ void handle_app_events(App* app)
                 set_camera_side_speed(&(app->camera), -1);
                 break;
             case SDL_SCANCODE_E:
-                app->scene.cat_forward_speed=1;
+                set_camera_lift_speed(&(app->camera), 1);
                 break;
             case SDL_SCANCODE_Q:
+                set_camera_lift_speed(&(app->camera), -1);
+                break;
+            case SDL_SCANCODE_T:
+                app->scene.cat_forward_speed=1;
+                break;
+            case SDL_SCANCODE_R:
                 app->scene.cat_forward_speed=-1;
+                break;
+            case SDL_SCANCODE_U:
+                increase_light(&(app->scene));
                 break;
             default:
                 break;
@@ -147,6 +156,10 @@ void handle_app_events(App* app)
                 break;
             case SDL_SCANCODE_E:
             case SDL_SCANCODE_Q:
+                set_camera_lift_speed(&(app->camera), 0);
+                break;
+            case SDL_SCANCODE_T:
+            case SDL_SCANCODE_R:
                 app->scene.cat_forward_speed=0;
                 break;
             default:

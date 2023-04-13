@@ -13,6 +13,9 @@ typedef struct Scene
     Model cat;
     Model house;
     Material material;
+    GLuint texture_id;
+    float ambient_light[4];
+    float diffuse_light[4];
     float cat_forward;
     float cat_forward_speed;
 } Scene;
@@ -25,7 +28,7 @@ void init_scene(Scene* scene);
 /**
  * Set the lighting of the scene.
  */
-void set_lighting();
+void set_lighting(Scene *scene);
 
 /**
  * Set the current material.
@@ -46,5 +49,6 @@ void render_scene(const Scene* scene);
  * Draw the origin of the world coordinate system.
  */
 void draw_origin();
+void increase_light(Scene *scene);
 
 #endif /* SCENE_H */
