@@ -1,7 +1,7 @@
 # Grafika
 Féléves beadandó feladat:
 
-Egy targoncát irányító grafikus alkalmazás készítése, amelyben szerepel:
+Egy targoncát vezetős grafikus alkalmazás készítése, amelyben szerepel:
 - textúrázott targonca modell betöltése
 - kamerakezelés, 2 szemszög (fel-le nézni képes targonca vezető és mozogni+forogni képes külső szemlélő)
 - a targonca mozgatása a kinematikus bicikli modell alapján, forgó hátsó kerekek és kormány
