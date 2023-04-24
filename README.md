@@ -10,3 +10,4 @@ Egy targoncát vezetős grafikus alkalmazás készítése, amelyben szerepel:
 - ütközésvizsgálat (a targonca nem hagyhatja el a neki szánt placcot)
 - raklapok egyszerűsített emelése, átpakolása
 - gombnyomásra cserélhető textúra
+- környezet: sík, kerítéssel körülhatárolt placc a targonca mozgástere, rajta kívül egy utca házakkal (ha találok megfelelő modellt), félgömb alakú skybox - a látható szegélyek miatt ez elképzelhető, hogy újra lesz gondolva
