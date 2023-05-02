@@ -32,6 +32,7 @@ typedef struct Forklift
     float fork_speed; //villa felfele mozgasanak sebessege
     float fork_lift_height; //villa z pozicioja
     Bounding_box box;
+    Bounding_box fork_box;
     Light spotlight;
 
 } Forklift;

@@ -94,7 +94,7 @@ void increase_light(Scene *scene)
     scene->diffuse_light[1] = 0.3882f;
     scene->diffuse_light[2] = 0.4f;
     scene->diffuse_light[3] = 1.0f;
-    if (scene->ambient_light[0] < 0.5)
+    if (scene->ambient_light[0] < 0.25f)
     {
         scene->ambient_light[0] += 0.0625f;
         scene->ambient_light[1] += 0.0625f;
@@ -202,7 +202,7 @@ void update_scene(Scene *scene, double time)
     update_forklift(&(scene->forklift), time, &(scene->pallet));
     float pos[]={scene->forklift.x, scene->forklift.y, scene->forklift.fork_lift_height};
     update_pallet(&(scene->pallet),pos, scene->forklift.body_turn_angle);
-    if(!is_inside(scene->arena, scene->forklift.box)){
+    if(!is_inside(scene->arena, scene->forklift.box) || !is_inside(scene->arena, scene->forklift.fork_box) ){
         stop_colliding_forklift(&(scene->forklift), time);
     }
     scene->skybox_angle+=scene->skybox_speed;

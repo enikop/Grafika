@@ -37,6 +37,9 @@ void init_forklift(Forklift *forklift){
     float dimensions[] = {1.5f,3.28f, 3.2f};
     float center[] = {0.0f, -1.07f,1.16f};
     init_bounding_box(&(forklift->box), dimensions, center);
+    float fork_dimensions[]={0.7758f, 1.1125f, 0.055f};
+    float fork_center[]={0.0f, 1.12f, -0.2f};
+    init_bounding_box(&(forklift->fork_box), fork_dimensions, fork_center);
     init_wheels(&(forklift->wheels));
     init_light(&(forklift->spotlight));
     forklift->material1.ambient.red = 0.19225;
@@ -126,11 +129,10 @@ void update_forklift(Forklift *forklift, double time, Pallet *pallet){
             forklift->x -= speed_x*time;
             forklift->y -= speed_y*time;
             forklift->body_turn_angle-=forklift->body_turn_speed*time;
-            printf("x: ");
         }
-        printf("%.4f %.4f\n", forklift->x, forklift->y);
     }
     update_bounding_box(&(forklift->box), pos, forklift->body_turn_angle);
+    update_bounding_box(&(forklift->fork_box), pos, forklift->body_turn_angle);
     //hatso kerek forgasi sebessege = targonca sebesseg/kerek kerulet
     forklift->wheels.rot_speed=forklift->speed/2.8379*360;
     //kormany forgasszoge 12-szerese a kerekenek (360 fok mindket iranyba)
@@ -162,6 +164,7 @@ void set_fork_speed(Forklift *forklift, double speed){
     forklift->fork_speed = speed;
 }
 void render_forklift(Forklift *forklift){
+    draw_bounding_box(&(forklift->fork_box));
     set_light(&(forklift->spotlight));
     set_material(&(forklift->material1));
     glPushMatrix();
