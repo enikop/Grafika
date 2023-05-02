@@ -40,6 +40,6 @@ void update_forklift(Forklift *forklift, double time, Pallet *pallet);
 void render_forklift(Forklift *forklift);
 void set_forklift_acceleration(Forklift *forklift, double acc);
 void set_fork_speed(Forklift *forklift, double speed);
-void stop_colliding_forklift(Forklift *forklift, double time, Bounding_box *arena);
+void stop_colliding_forklift(Forklift *forklift, double time);
 
 #endif

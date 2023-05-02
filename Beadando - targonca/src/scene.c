@@ -203,7 +203,7 @@ void update_scene(Scene *scene, double time)
     float pos[]={scene->forklift.x, scene->forklift.y, scene->forklift.fork_lift_height};
     update_pallet(&(scene->pallet),pos, scene->forklift.body_turn_angle);
     if(!is_inside(scene->arena, scene->forklift.box)){
-        stop_colliding_forklift(&(scene->forklift), time, &(scene->arena));
+        stop_colliding_forklift(&(scene->forklift), time);
     }
     scene->skybox_angle+=scene->skybox_speed;
     if(scene->skybox_angle>=360) scene->skybox_angle=0;

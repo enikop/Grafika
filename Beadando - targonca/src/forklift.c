@@ -109,7 +109,7 @@ void update_forklift(Forklift *forklift, double time, Pallet *pallet){
     forklift->z += forklift->speed_z*time;
     forklift->fork_lift_height+=forklift->fork_speed*time;
     float pos[3]={0,0,forklift->z};
-    if(is_colliding(forklift->box, pallet->box)) printf("utkozes\n");
+    //if(is_colliding(forklift->box, pallet->box)) printf("utkozes\n");
     //todo ha x iranybol utkozik, nem erzekeli
     if(pallet->is_lifted){
         forklift->x += speed_x*time;
@@ -118,19 +118,17 @@ void update_forklift(Forklift *forklift, double time, Pallet *pallet){
         pos[1]=forklift->y;
     } else {
         forklift->x += speed_x*time;
+        forklift->y += speed_y*time;
         pos[0]=forklift->x;
+        pos[1]=forklift->y;
         update_bounding_box(&(forklift->box), pos, forklift->body_turn_angle);
         if(is_colliding(forklift->box, pallet->box)){
             forklift->x -= speed_x*time;
-        }
-        pos[0]=forklift->x;
-        forklift->y += speed_y*time;
-        pos[1]=forklift->y;
-        update_bounding_box(&(forklift->box), pos, forklift->body_turn_angle);
-        if(is_colliding(forklift->box, pallet->box)){
             forklift->y -= speed_y*time;
+            forklift->body_turn_angle-=forklift->body_turn_speed*time;
+            printf("x: ");
         }
-        pos[1]=forklift->y;
+        printf("%.4f %.4f\n", forklift->x, forklift->y);
     }
     update_bounding_box(&(forklift->box), pos, forklift->body_turn_angle);
     //hatso kerek forgasi sebessege = targonca sebesseg/kerek kerulet
@@ -149,24 +147,15 @@ void update_forklift(Forklift *forklift, double time, Pallet *pallet){
 void set_forklift_acceleration(Forklift *forklift, double acc){
     forklift->acceleration = acc;
 }
-void stop_colliding_forklift(Forklift *forklift, double time, Bounding_box *arena){
+void stop_colliding_forklift(Forklift *forklift, double time){
     float speed_x=forklift->speed*sin(forklift->body_turn_angle);
     float speed_y=forklift->speed*cos(forklift->body_turn_angle);
     float pos[3]={forklift->x,forklift->y,forklift->z};
     forklift->x -= speed_x*time;
-    pos[0]=forklift->x;
-    update_bounding_box(&(forklift->box), pos, forklift->body_turn_angle);
-    if(!is_inside(*arena, forklift->box)){
-        forklift->x += speed_x*time;
-    }
-    pos[0]=forklift->x;
     forklift->y -= speed_y*time;
+    forklift->body_turn_angle-=forklift->body_turn_speed*time;
     pos[1]=forklift->y;
-    update_bounding_box(&(forklift->box), pos, forklift->body_turn_angle);
-    if(!is_inside(*arena, forklift->box)){
-        forklift->y += speed_y*time;
-    }
-    pos[1]=forklift->y;
+    pos[0]=forklift->x;
     update_bounding_box(&(forklift->box), pos, forklift->body_turn_angle);
 }
 void set_fork_speed(Forklift *forklift, double speed){
