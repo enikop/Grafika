@@ -10,7 +10,7 @@ void init_scene(Scene *scene)
 {
     load_model(&(scene->skybox), "assets/models/sky.obj");
     load_model(&(scene->fence), "assets/models/fence.obj");
-    load_model(&(scene->road), "assets/models/road.obj");
+    load_model(&(scene->road), "assets/models/roadbase.obj");
     load_model(&(scene->buildings[0]), "assets/models/b1_ready.obj");
     load_model(&(scene->buildings[1]), "assets/models/b2_ready.obj");
     load_model(&(scene->buildings[2]), "assets/models/b3_ready.obj");
@@ -19,6 +19,7 @@ void init_scene(Scene *scene)
     scene->skybox_texture_id[1] = load_texture("assets/textures/sky_night.jpg");
     scene->skybox_texture_id[2] = scene->skybox_texture_id[0];
     scene->ground_texture_id = load_texture("assets/textures/beton.jpg");
+    scene->grass_texture_id = load_texture("assets/textures/grass.jpg");
     scene->road_texture_id = load_texture("assets/textures/road.jpg");
     scene->building_texture_ids[0]=load_texture("assets/textures/b1.jpg");
     scene->building_texture_ids[1]=load_texture("assets/textures/b2.jpg");
@@ -69,6 +70,7 @@ void init_scene(Scene *scene)
     scene->index_list_buildings=glGenLists(1);
     glNewList(scene->index_list_buildings, GL_COMPILE);
     int i;
+    glDisable(GL_COLOR_MATERIAL);
     for(i=0; i<4; i++){
             glBindTexture(GL_TEXTURE_2D, scene->building_texture_ids[i]);
             glEnable(GL_TEXTURE_2D);
@@ -76,7 +78,7 @@ void init_scene(Scene *scene)
         }
         glBindTexture(GL_TEXTURE_2D, scene->road_texture_id);
         glEnable(GL_TEXTURE_2D);
-        glTranslatef(0,0,0.3f);
+        //glTranslatef(0,0,0.1f);
         draw_model(&(scene->road));
         glDisable(GL_TEXTURE_2D);
         glEnable(GL_COLOR_MATERIAL);
@@ -121,8 +123,6 @@ void increase_light(Scene *scene)
 }
 void set_lighting(const Scene *scene)
 {
-    /*float ambient_light[] = {0.0f, 0.0f, 0.0f, 1.0f};
-    float diffuse_light[] = {1.0f, 1.0f, 1.0, 1.0f};*/
     float specular_light[] = {0.3f, 0.3f, 0.3f, 1.0f};
     float position[] = {0.0f, 0.0f, 2.0f, 1.0f};
 
@@ -224,12 +224,12 @@ void render_scene(Scene *scene)
     glDisable(GL_CULL_FACE);
     glEnable(GL_LIGHTING);
     glPushMatrix();
-        glTranslatef(10.0f, -10.0f, -0.8f);
+        glTranslatef(10.0f, -10.0f, -0.5f);
        glCallList(scene->index_list_buildings);
     glPopMatrix();
     glPushMatrix();
         glRotatef(180, 0, 0, 1);
-        glTranslatef(26.0f, -15.7f, -0.8f);
+        glTranslatef(26.0f, -15.7f, -0.5f);
         glCallList(scene->index_list_buildings);
     glPopMatrix();
     glEnable(GL_CULL_FACE);
@@ -250,6 +250,10 @@ void render_scene(Scene *scene)
 }
 
 void draw_terrain(Scene *scene){
+    //float dimensions[] = {25.535f, 22.15f, 10.0f};
+    //float center[] = {-8.0f, 1.43f, 1.0f};
+    /*17.535, 23.58
+    -33.535, -20.72*/
     glEnable(GL_COLOR_MATERIAL);
     glBindTexture(GL_TEXTURE_2D, scene->ground_texture_id);
     glEnable(GL_TEXTURE_2D);
@@ -257,13 +261,25 @@ void draw_terrain(Scene *scene){
     glBegin(GL_QUADS);
     glColor3f(1, 1, 1);
     glTexCoord2f(0,128);
-    glVertex3f(40, -40, -0.451667);
+    glVertex3f(4.9675, -8.405, -0.451667);
     glTexCoord2f(128,128);
-    glVertex3f(40, 40, -0.451667);
+    glVertex3f(4.9675, 14.145, -0.451667);
     glTexCoord2f(0,128);
-    glVertex3f(-40, 40, -0.451667);
+    glVertex3f(-20.9675, 14.145, -0.451667);
     glTexCoord2f(0,0);
-    glVertex3f(-40, -40, -0.451667);
+    glVertex3f(-20.9675, -8.405, -0.451667);
+    glEnd();
+    glBindTexture(GL_TEXTURE_2D, scene->grass_texture_id);
+    glEnable(GL_TEXTURE_2D);
+    glBegin(GL_QUADS);
+    glTexCoord2f(24,0);
+    glVertex3f(140, -140, -0.5);
+    glTexCoord2f(24,24);
+    glVertex3f(140, 140, -0.5);
+    glTexCoord2f(0,24);
+    glVertex3f(-140, 140, -0.5);
+    glTexCoord2f(0,0);
+    glVertex3f(-140, -140, -0.5);
     glEnd();
 }
 void draw_origin()

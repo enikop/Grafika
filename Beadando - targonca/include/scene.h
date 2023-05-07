@@ -25,6 +25,7 @@ typedef struct Scene
     GLuint road_texture_id;
     GLuint skybox_texture_id[3];
     GLuint ground_texture_id;
+    GLuint grass_texture_id;
     GLuint index_list_origin;
     GLuint index_list_buildings;
     Material material;
