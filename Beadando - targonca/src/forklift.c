@@ -32,6 +32,7 @@ void init_forklift(Forklift *forklift){
     forklift->steer_angle = 0;
     forklift->fork_speed=0;
     forklift->fork_lift_height = 0;
+    forklift->is_light_on=false;
 
     
     float dimensions[] = {1.5f,3.28f, 3.2f};
@@ -163,9 +164,13 @@ void stop_colliding_forklift(Forklift *forklift, double time){
 void set_fork_speed(Forklift *forklift, double speed){
     forklift->fork_speed = speed;
 }
+void switch_spotlight(Forklift *forklift){
+    if(forklift->is_light_on) forklift->is_light_on=false;
+    else forklift->is_light_on = true;
+}
 void render_forklift(Forklift *forklift){
-    draw_bounding_box(&(forklift->fork_box));
-    set_light(&(forklift->spotlight));
+    //draw_bounding_box(&(forklift->fork_box));
+    set_light(&(forklift->spotlight), forklift->is_light_on);
     set_material(&(forklift->material1));
     glPushMatrix();
         glEnable(GL_CULL_FACE);

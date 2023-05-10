@@ -23,7 +23,7 @@ typedef struct Scene
     Model buildings[4];
     GLuint building_texture_ids[4];
     GLuint road_texture_id;
-    GLuint skybox_texture_id[3];
+    GLuint skybox_texture_id[4];
     GLuint ground_texture_id;
     GLuint grass_texture_id;
     GLuint index_list_origin;
@@ -67,5 +67,6 @@ void render_scene(Scene* scene);
 void draw_origin();
 void draw_terrain(Scene *scene);
 void increase_light(Scene *scene);
+void decrease_light(Scene *scene);
 
 #endif /* SCENE_H */

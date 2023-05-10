@@ -92,9 +92,9 @@ void reshape(GLsizei width, GLsizei height)
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glFrustum(
-        -.01, .01,
-        -.006, .006,
-        .01166, 70
+        -.1, .1,
+        -.06, .06,
+        .1166, 700
     );
 }
 
@@ -151,7 +151,13 @@ void handle_app_events(App* app)
                     set_fork_speed(&(app->scene.forklift), 3);
                 }
                 break;
-            case SDL_SCANCODE_U:
+            case SDL_SCANCODE_V: 
+                switch_spotlight(&(app->scene.forklift));
+                break;
+            case SDL_SCANCODE_1:
+                decrease_light(&(app->scene));
+                break;
+             case SDL_SCANCODE_2:
                 increase_light(&(app->scene));
                 break;
             case SDL_SCANCODE_C:

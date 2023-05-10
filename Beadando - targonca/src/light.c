@@ -4,6 +4,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 void init_light(Light* light){
     light->position1[0]=0;
@@ -29,7 +30,7 @@ void init_light(Light* light){
     light->specular[1]=1.0f;
     light->specular[2]=1.0f;
     light->specular[3]=1.0f;
-    light->cutoff = 20;
+    light->cutoff = 40;
 }
 void update_light(Light* light, float pos1[4], float pos2[4], float dir[3]){
     light->position1[0] = pos1[0];
@@ -44,7 +45,12 @@ void update_light(Light* light, float pos1[4], float pos2[4], float dir[3]){
     light->direction[1] = dir[1];
     light->direction[2] = dir[2];
 }
-void set_light(Light *light){
+void set_light(Light *light, bool is_on){
+    if(!is_on){
+        glDisable(GL_LIGHT1);
+        glDisable(GL_LIGHT2);
+        return;
+    }
     glLightfv(GL_LIGHT1, GL_AMBIENT, light->ambient);
     glLightfv(GL_LIGHT1, GL_DIFFUSE, light->diffuse);
     glLightfv(GL_LIGHT1, GL_SPECULAR, light->specular);

@@ -34,6 +34,7 @@ typedef struct Forklift
     Bounding_box box;
     Bounding_box fork_box;
     Light spotlight;
+    bool is_light_on;
 
 } Forklift;
 void init_forklift(Forklift *forklift);
@@ -42,5 +43,6 @@ void render_forklift(Forklift *forklift);
 void set_forklift_acceleration(Forklift *forklift, double acc);
 void set_fork_speed(Forklift *forklift, double speed);
 void stop_colliding_forklift(Forklift *forklift, double time);
+void switch_spotlight(Forklift *forklift);
 
 #endif
