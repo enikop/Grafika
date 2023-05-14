@@ -10,15 +10,15 @@
 
 typedef struct Forklift
 {
-    Model cube_model;
-    Set_of_wheels wheels;
+    //modellek
     Model model;
     Model fork_model;
     Model steer_model;
-    Material material1;
-    Material material2;
-    GLuint texture_id;
-    GLuint fork_texture_id;
+    //anyagok
+    Material material_steel;
+    Material material_rubber;
+    GLuint texture_id; //targonca textura
+    GLuint fork_texture_id; //villa textura
     float x;
     float y;
     float z;
@@ -31,18 +31,27 @@ typedef struct Forklift
     float steer_angle; //kormany elfodulasa FOKBAN, kerek*12
     float fork_speed; //villa felfele mozgasanak sebessege
     float fork_lift_height; //villa z pozicioja
-    Bounding_box box;
-    Bounding_box fork_box;
-    Light spotlight;
-    bool is_light_on;
+    Bounding_box box; //targonca befoglalo teglalap (2d)
+    Bounding_box fork_box; //villa befoglalo teglalap
+    Set_of_wheels wheels; //kerekek
+    Light spotlight; //fenyszoro
+    bool is_light_on; //be van-e kapcsolva a fenyszoro
 
 } Forklift;
+
+//modellek es texturak betoltese, ertek inicializalas
 void init_forklift(Forklift *forklift);
+//ertek frissites
 void update_forklift(Forklift *forklift, double time, Pallet *pallet);
+//a targonca kirajzolasa aktualis allapotaban
 void render_forklift(Forklift *forklift);
+//gyorsulas beallitasa
 void set_forklift_acceleration(Forklift *forklift, double acc);
+//villa sebesseg beallitasa
 void set_fork_speed(Forklift *forklift, double speed);
+//az arena hataraival utkozo targonca megallitasa
 void stop_colliding_forklift(Forklift *forklift, double time);
+//fenyszoro ki-bekapcsolasa
 void switch_spotlight(Forklift *forklift);
 
 #endif

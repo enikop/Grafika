@@ -6,48 +6,40 @@
 
 #include <stdbool.h>
 
-/**
- * Camera, as a moving point with direction
- */
+
 typedef struct Camera
 {
-    vec3 position;
-    vec3 rotation;
-    vec3 speed;
-    bool is_on_forklift;
+    vec3 position; //kamera helye
+    vec3 rotation; //kamera elfordulasa
+    vec3 speed; //kamera sebessege
+    bool is_on_forklift; //rajta van-e a targoncan a kamera
 } Camera;
 
-/**
- * Initialize the camera to the start position.
- */
+//kamera inicializalasa a kezdohelyzetere
 void init_camera(Camera* camera);
 
-/**
- * Update the position of the camera.
- */
+//kamera helyenek frissitese, ha rajta van a targoncan, akkor targonca parameterek alapjan
 void update_camera(Camera* camera, Forklift* forklift,  double time);
+
+//kamera feltevese a targoncara es levevese onnen
 void change_camera_mode(Camera* camera);
 
+//kamera visszaallitasa kezdohelyzetbe
 void reset_camera(Camera* camera);
-/**
- * Apply the camera settings to the view transformation.
- */
+
+//a nezopont beallitasa, hogy a kamera megfelelo helyen legyen
 void set_view(const Camera* camera);
 
-/**
- * Set the horizontal and vertical rotation of the view angle.
- */
+//kamera forgatasa fel-le es oldalra
 void rotate_camera(Camera* camera, double horizontal, double vertical);
 
-/**
- * Set the speed of forward and backward motion.
- */
+//elore sebesseg beallitasa
 void set_camera_speed(Camera* camera, double speed);
 
-/**
- * Set the speed of left and right side steps.
- */
+//oldaliranyu sebesseg beallitasa
 void set_camera_side_speed(Camera* camera, double speed);
+
+//felfele iranyulo sebesseg beallitasa
 void set_camera_lift_speed(Camera* camera, double speed);
 
 #endif /* CAMERA_H */

@@ -169,7 +169,7 @@ void handle_app_events(App* app)
                 else app->scene.is_manual_visible = true;
                 break;
             case SDL_SCANCODE_L:
-               up_down_pallet(&(app->scene.pallet), app->scene.forklift.fork_lift_height < 0.001 ? true : false );
+               up_down_pallet(&(app->scene.pallet), &(app->scene.arena), app->scene.forklift.fork_lift_height < 0.001 ? true : false );
                break;
             default:
                 break;

@@ -43,33 +43,33 @@ void init_forklift(Forklift *forklift){
     init_bounding_box(&(forklift->fork_box), fork_dimensions, fork_center);
     init_wheels(&(forklift->wheels));
     init_light(&(forklift->spotlight));
-    forklift->material1.ambient.red = 0.19225;
-    forklift->material1.ambient.green = 0.19225;
-    forklift->material1.ambient.blue = 0.19225;
+    forklift->material_steel.ambient.red = 0.19225;
+    forklift->material_steel.ambient.green = 0.19225;
+    forklift->material_steel.ambient.blue = 0.19225;
 
-    forklift->material1.diffuse.red = 0.50754;
-    forklift->material1.diffuse.green =0.50754;
-    forklift->material1.diffuse.blue = 0.50754;
+    forklift->material_steel.diffuse.red = 0.50754;
+    forklift->material_steel.diffuse.green =0.50754;
+    forklift->material_steel.diffuse.blue = 0.50754;
 
-    forklift->material1.specular.red = 0.508273;
-    forklift->material1.specular.green = 0.508273;
-    forklift->material1.specular.blue = 0.508273;
+    forklift->material_steel.specular.red = 0.508273;
+    forklift->material_steel.specular.green = 0.508273;
+    forklift->material_steel.specular.blue = 0.508273;
 
-    forklift->material1.shininess = 100;
+    forklift->material_steel.shininess = 100;
 
-    forklift->material2.ambient.red = 0.02;
-    forklift->material2.ambient.green = 0.02;
-    forklift->material2.ambient.blue = 0.02;
+    forklift->material_rubber.ambient.red = 0.02;
+    forklift->material_rubber.ambient.green = 0.02;
+    forklift->material_rubber.ambient.blue = 0.02;
 
-    forklift->material2.diffuse.red = 0.01;
-    forklift->material2.diffuse.green =0.01;
-    forklift->material2.diffuse.blue = 0.01;
+    forklift->material_rubber.diffuse.red = 0.01;
+    forklift->material_rubber.diffuse.green =0.01;
+    forklift->material_rubber.diffuse.blue = 0.01;
 
-    forklift->material2.specular.red =0.4;
-    forklift->material2.specular.green = 0.4;
-    forklift->material2.specular.blue = 0.4;
+    forklift->material_rubber.specular.red =0.4;
+    forklift->material_rubber.specular.green = 0.4;
+    forklift->material_rubber.specular.blue = 0.4;
 
-    forklift->material2.shininess = 5;
+    forklift->material_rubber.shininess = 5;
 }
 void update_forklift(Forklift *forklift, double time, Pallet *pallet){
     float speed_x, speed_y;
@@ -171,7 +171,7 @@ void switch_spotlight(Forklift *forklift){
 void render_forklift(Forklift *forklift){
     //draw_bounding_box(&(forklift->fork_box));
     set_light(&(forklift->spotlight), forklift->is_light_on);
-    set_material(&(forklift->material1));
+    set_material(&(forklift->material_steel));
     glPushMatrix();
         glEnable(GL_CULL_FACE);
         glBindTexture(GL_TEXTURE_2D, forklift->texture_id);
@@ -183,17 +183,17 @@ void render_forklift(Forklift *forklift){
         draw_model(&(forklift->model));
         glBindTexture(GL_TEXTURE_2D, forklift->fork_texture_id);
         glEnable(GL_TEXTURE_2D);
-        set_material(&(forklift->material2));
+        set_material(&(forklift->material_rubber));
         render_wheels(&(forklift->wheels));
         //villa rajzol
-        set_material(&(forklift->material1));
+        set_material(&(forklift->material_steel));
         glPushMatrix();
             glTranslatef(0,0,forklift->fork_lift_height);
             draw_model(&(forklift->fork_model));
         glPopMatrix();
         //kormany rajzol
         glPushMatrix();
-            set_material(&(forklift->material2));
+            set_material(&(forklift->material_rubber));
             glTranslated(-0.01, -0.83125, 1.563192);
             glRotatef(forklift->steer_angle, 0, -0.5878, 0.809);
             draw_model(&(forklift->steer_model));

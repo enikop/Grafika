@@ -22,39 +22,25 @@ typedef struct App
     Scene scene;
 } App;
 
-/**
- * Initialize the application.
- */
+//app inicializalasa
 void init_app(App* app, int width, int height);
 
-/**
- * Initialize the OpenGL context.
- */
+//OpenGL kontextus inicializalas
 void init_opengl();
 
-/**
- * Reshape the window.
- */
+//ablak meretezese
 void reshape(GLsizei width, GLsizei height);
 
-/**
- * Handle the events of the application.
- */
+//esemenykezeles
 void handle_app_events(App* app);
 
-/**
- * Update the application.
- */
+//ertekfrissites
 void update_app(App* app);
 
-/**
- * Render the application.
- */
+//applikacio komponensek renderelese
 void render_app(App* app);
 
-/**
- * Destroy the application.
- */
+//kilepes
 void destroy_app(App* app);
 
 #endif /* APP_H */

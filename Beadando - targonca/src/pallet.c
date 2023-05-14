@@ -39,13 +39,19 @@ void update_pallet(Pallet *pallet, float* pos, float angle){
     }
     update_bounding_box(&(pallet->box), pallet->position, pallet->angle);
 }
-void up_down_pallet(Pallet *pallet, bool is_fork_down){
+void up_down_pallet(Pallet *pallet, Bounding_box *arena,  bool is_fork_down){
     if(pallet->is_green && is_fork_down) pallet->is_lifted = true;
     else if(is_fork_down && pallet->is_lifted){
-        pallet->is_lifted=false;
         pallet->position[0]+=sin(pallet->angle)*1.2;
         pallet->position[1]+=cos(pallet->angle)*1.2;
-        pallet->position[2]=-0.3f;
+        if(is_inside(*arena, pallet->box)){
+            pallet->is_lifted=false;
+            pallet->position[2]=-0.3f;
+        }
+        else{
+            pallet->position[0]-=sin(pallet->angle)*1.2;
+            pallet->position[1]-=cos(pallet->angle)*1.2;
+        }
     }
 }
 void render_pallet(Pallet *pallet){
@@ -59,12 +65,11 @@ void render_pallet(Pallet *pallet){
         if(pallet->is_lifted){
             glBindTexture(GL_TEXTURE_2D, pallet->road_texture_id);
             glEnable(GL_TEXTURE_2D);
-            glDisable(GL_LIGHTING);
             glDisable(GL_CULL_FACE);
             glPushMatrix();
                 glTranslatef(0.0f, 1.2f, -pallet->position[2]-0.4f);
                 glBegin(GL_QUADS);
-                    glColor3f(0.5f, 0.5f, 0.5f);
+                    glNormal3f(0,0,1);
                     glTexCoord2f(0,0);
                     glVertex3f(pallet->dimensions[0]/2,pallet->dimensions[1]/2, 0.0f);
                     glTexCoord2f(0,1);
@@ -75,7 +80,6 @@ void render_pallet(Pallet *pallet){
                     glVertex3f(-pallet->dimensions[0]/2,pallet->dimensions[1]/2, 0.0f);                    
                 glEnd();
             glPopMatrix();
-            glEnable(GL_LIGHTING);
             glEnable(GL_CULL_FACE);
         }
     glPopMatrix();

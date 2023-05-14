@@ -10,7 +10,7 @@ void init_scene(Scene *scene)
 {
     load_model(&(scene->skybox), "assets/models/sky.obj");
     load_model(&(scene->fence), "assets/models/fence.obj");
-    load_model(&(scene->road), "assets/models/roadbase.obj");
+    load_model(&(scene->road), "assets/models/road3.obj");
     load_model(&(scene->buildings[0]), "assets/models/b1_ready.obj");
     load_model(&(scene->buildings[1]), "assets/models/b2_ready.obj");
     load_model(&(scene->buildings[2]), "assets/models/b3.obj");
@@ -22,6 +22,7 @@ void init_scene(Scene *scene)
     scene->ground_texture_id = load_texture("assets/textures/beton.jpg");
     scene->grass_texture_id = load_texture("assets/textures/grass.jpg");
     scene->road_texture_id = load_texture("assets/textures/road.jpg");
+    scene->instructions_texture_id=load_texture("assets/textures/instructions.jpg");
     scene->building_texture_ids[0]=load_texture("assets/textures/b1.jpg");
     scene->building_texture_ids[1]=load_texture("assets/textures/b2.jpg");
     scene->building_texture_ids[2]=load_texture("assets/textures/b3.jpg");
@@ -79,6 +80,7 @@ void init_scene(Scene *scene)
         }
         glBindTexture(GL_TEXTURE_2D, scene->road_texture_id);
         glEnable(GL_TEXTURE_2D);
+        glEnable(GL_COLOR_MATERIAL);
         //glTranslatef(0,0,0.1f);
         draw_model(&(scene->road));
         glDisable(GL_TEXTURE_2D);
@@ -185,13 +187,14 @@ void set_material(const Material *material)
 
     glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &(material->shininess));
 }
-void show_manual()
+void show_manual(Scene *scene)
 {
     glDisable(GL_LIGHTING);
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
     glEnable(GL_COLOR_MATERIAL);
-
+    glBindTexture(GL_TEXTURE_2D,  scene->instructions_texture_id);
+    glEnable(GL_TEXTURE_2D);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
@@ -199,13 +202,13 @@ void show_manual()
 
     glBegin(GL_QUADS);
     glTexCoord2f(0, 0);
-    glVertex3f(-1, 1, -3);
+    glVertex3f(-2.4, 1.6f, -3);
     glTexCoord2f(1, 0);
-    glVertex3f(1, 1, -3);
+    glVertex3f(2.4, 1.6f, -3);
     glTexCoord2f(1, 1);
-    glVertex3f(1, -1, -3);
+    glVertex3f(2.4, -1.6f, -3);
     glTexCoord2f(0, 1);
-    glVertex3f(-1, -1, -3);
+    glVertex3f(-2.4, -1.6f, -3);
     glEnd();
 
     glEnable(GL_CULL_FACE);
@@ -232,9 +235,7 @@ void update_scene(Scene *scene, double time)
     distance = pow(pow(scene->pallet.position[0]-scene->forklift.x, 2)+pow(scene->pallet.position[1]-scene->forklift.y, 2), 0.5);
     if(distance<3 && !scene->pallet.is_lifted )scene->pallet.is_green=true;
     else scene->pallet.is_green=false;
-    /*if(!scene->pallet.is_lifted && is_colliding(scene->forklift.box, scene->pallet.box)){
-        stop_colliding_forklift(&(scene->forklift), time);
-    }*/
+    if(!is_inside(scene->arena, scene->pallet.box)) scene->pallet.is_lifted = true;
 }
 void render_scene(Scene *scene)
 {
@@ -268,14 +269,11 @@ void render_scene(Scene *scene)
     glEnable(GL_LIGHTING);
     render_forklift(&(scene->forklift));
     render_pallet(&(scene->pallet));
-    if(scene->is_manual_visible) show_manual();
+    if(scene->is_manual_visible) show_manual(scene);
 }
 
 void draw_terrain(Scene *scene){
-    //float dimensions[] = {25.535f, 22.15f, 10.0f};
-    //float center[] = {-8.0f, 1.43f, 1.0f};
-    /*17.535, 23.58
-    -33.535, -20.72*/
+    // a placcot darabokban rajzoljuk ki, hogy latvanyosan verje vissza a fenyt
     int i, j;
     float x_coord=-20.9675f, y_coord=-8.405f;
     float step_x=25.935/50, step_y=22.55/50;
@@ -301,15 +299,8 @@ void draw_terrain(Scene *scene){
         x_coord+=step_x;
         y_coord=-8.405f;
     }
-    /*glTexCoord2f(0,12);
-    glVertex3f(4.9675, -8.405, -0.451667);
-    glTexCoord2f(12,12);
-    glVertex3f(4.9675, 14.145, -0.451667);
-    glTexCoord2f(0,12);
-    glVertex3f(-20.9675, 14.145, -0.451667);
-    glTexCoord2f(0,0);
-    glVertex3f(-20.9675, -8.405, -0.451667);*/
     glEnd();
+    //a tavoli fuves resz kirajzolasa
     glBindTexture(GL_TEXTURE_2D, scene->grass_texture_id);
     glEnable(GL_TEXTURE_2D);
     glBegin(GL_QUADS);

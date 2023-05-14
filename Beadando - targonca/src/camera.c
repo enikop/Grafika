@@ -6,6 +6,7 @@
 
 #include <math.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 void init_camera(Camera* camera)
 {
@@ -40,6 +41,9 @@ void update_camera(Camera* camera, Forklift* forklift, double time)
         camera->position.x += cos(side_angle) * camera->speed.x * time;
         camera->position.y += sin(side_angle) * camera->speed.x * time;
         camera->position.z += camera->speed.z * time;
+        if(camera->position.z<0 || camera->position.z>12)  camera->position.z -= camera->speed.z * time;
+        if(camera->position.x<-23.77 || camera->position.x>6.34) camera->position.x -= cos(side_angle) * camera->speed.x * time+cos(angle) * camera->speed.y * time;
+        if(camera->position.y<-9.62 || camera->position.y>15.43) camera->position.y -= sin(side_angle) * camera->speed.x * time+sin(angle) * camera->speed.y * time;
     }
 }
 void change_camera_mode(Camera* camera){
