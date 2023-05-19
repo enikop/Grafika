@@ -6,8 +6,8 @@
 #include "utils.h"
 #include "forklift.h"
 #include "pallet.h"
+#include "timer.h"
 #include <stdbool.h>
-
 #include <obj/model.h>
 
 
@@ -29,10 +29,12 @@ typedef struct Scene
     Model fence;
     Model road;
     Model buildings[4];
+    Model container;
     GLuint building_texture_ids[4];
     GLuint road_texture_id;
     GLuint ground_texture_id;
     GLuint grass_texture_id;
+    GLuint container_texture_id;
     //az origot es az epuleteket kirajzolo display listak indexei
     GLuint index_list_origin;
     GLuint index_list_buildings;
@@ -45,10 +47,16 @@ typedef struct Scene
 
     //a terulet utkozodoboza, amire a targonca mozgasa korlatozodik
     Bounding_box arena;
+    //a kontener utkozodoboza
+    Bounding_box container_box;
 
     //lathato-e eppen a hasznalati utmutato, tovabba annak texturaja
     bool is_manual_visible;
     GLuint instructions_texture_id;
+
+    //idomero es high score kijelzo
+    Timer timer;
+    Timer high_score;
 } Scene;
 
 //modell, texture betoltes, display listak letrehozasa
@@ -78,5 +86,8 @@ void draw_terrain(Scene *scene);
 //feny novelese es csokkentese, egyben napszakvaltassal is jarhat (skybox texturacsere)
 void increase_light(Scene *scene);
 void decrease_light(Scene *scene);
+
+//kezdoallapotba visszaallitas: idomero, targonca, raklap vissza a kezdoallapotba
+void reset_scene(Scene *scene);
 
 #endif /* SCENE_H */

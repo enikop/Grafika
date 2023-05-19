@@ -36,6 +36,7 @@ typedef struct Forklift
     Set_of_wheels wheels; //kerekek
     Light spotlight; //fenyszoro
     bool is_light_on; //be van-e kapcsolva a fenyszoro
+    bool is_fork_free_to_lower; //targonca villat le lehet-e engedni vagy van alatta valami
 
 } Forklift;
 
@@ -53,5 +54,7 @@ void set_fork_speed(Forklift *forklift, double speed);
 void stop_colliding_forklift(Forklift *forklift, double time);
 //fenyszoro ki-bekapcsolasa
 void switch_spotlight(Forklift *forklift);
+//kezdeti allapotra targonca
+void reset_forklift(Forklift *forklift);
 
 #endif

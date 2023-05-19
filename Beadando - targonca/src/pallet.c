@@ -1,6 +1,7 @@
 #define _USE_MATH_DEFINES
 #include "pallet.h"
 #include "texture.h"
+#include "timer.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
@@ -24,9 +25,11 @@ void init_pallet(Pallet *pallet, GLuint road_texture_id){
     pallet->dimensions[2]=dimensions[2];
     pallet->is_lifted=false;
     pallet->is_green=true;
+    pallet->is_visible=true;
     pallet->road_texture_id=road_texture_id;
 
     init_bounding_box(&(pallet->box), dimensions, pallet->position);
+    //nem hiba, origoba kell inicializalni, utana tolom
     pallet->position[1]=2.0f;
 }
 void update_pallet(Pallet *pallet, float* pos, float angle){
@@ -39,7 +42,7 @@ void update_pallet(Pallet *pallet, float* pos, float angle){
     }
     update_bounding_box(&(pallet->box), pallet->position, pallet->angle);
 }
-void up_down_pallet(Pallet *pallet, Bounding_box *arena,  bool is_fork_down){
+void up_down_pallet(Pallet *pallet, Bounding_box *arena,  bool is_fork_down, Timer *timer, Timer *hs){
     if(pallet->is_green && is_fork_down) pallet->is_lifted = true;
     else if(is_fork_down && pallet->is_lifted){
         pallet->position[0]+=sin(pallet->angle)*1.2;
@@ -52,9 +55,14 @@ void up_down_pallet(Pallet *pallet, Bounding_box *arena,  bool is_fork_down){
             pallet->position[0]-=sin(pallet->angle)*1.2;
             pallet->position[1]-=cos(pallet->angle)*1.2;
         }
+    } else if(!is_fork_down && pallet->is_green){
+        stop_timer(timer);
+        check_high_score(hs, timer->value);
+        pallet->is_visible = false;
     }
 }
 void render_pallet(Pallet *pallet){
+    if(!pallet->is_visible) return;
     glBindTexture(GL_TEXTURE_2D, pallet->texture_id);
     glEnable(GL_TEXTURE_2D);
     if(pallet->is_green) glColor3f(0.5f, 1.0f, 0.5f);
@@ -62,12 +70,13 @@ void render_pallet(Pallet *pallet){
         glTranslatef(pallet->position[0], pallet->position[1], pallet->position[2]);
         glRotatef(-pallet->angle/M_PI*180, 0, 0, 1);
         draw_model(&(pallet->model));
-        if(pallet->is_lifted){
+        glColor3f(1.0f, 1.0f, 1.0f);
+        if(pallet->is_lifted && !pallet->is_green){
             glBindTexture(GL_TEXTURE_2D, pallet->road_texture_id);
             glEnable(GL_TEXTURE_2D);
             glDisable(GL_CULL_FACE);
             glPushMatrix();
-                glTranslatef(0.0f, 1.2f, -pallet->position[2]-0.4f);
+                glTranslatef(0.0f, 1.2f, -pallet->position[2]-0.45f);
                 glBegin(GL_QUADS);
                     glNormal3f(0,0,1);
                     glTexCoord2f(0,0);
@@ -84,4 +93,15 @@ void render_pallet(Pallet *pallet){
         }
     glPopMatrix();
     glColor3f(1.0f, 1.0f, 1.0f);
+}
+
+void reset_pallet(Pallet *pallet){
+    pallet->angle=0;
+    pallet->position[0]=0.0f;
+    pallet->position[1]=2.0f;
+    pallet->position[2]=-0.3f;
+    pallet->is_lifted=false;
+    pallet->is_green=true;
+    pallet->is_visible=true;
+    update_bounding_box(&(pallet->box), pallet->position, pallet->angle);
 }

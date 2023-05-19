@@ -33,6 +33,7 @@ void init_forklift(Forklift *forklift){
     forklift->fork_speed=0;
     forklift->fork_lift_height = 0;
     forklift->is_light_on=false;
+    forklift->is_fork_free_to_lower=true;
 
     
     float dimensions[] = {1.5f,3.28f, 3.2f};
@@ -73,6 +74,7 @@ void init_forklift(Forklift *forklift){
 }
 void update_forklift(Forklift *forklift, double time, Pallet *pallet){
     float speed_x, speed_y;
+    forklift->is_fork_free_to_lower=true;
     //villa mozgatasa z=0 és z=2 kozottt
     if((forklift->fork_lift_height >= 2 && forklift->fork_speed>0) || (forklift->fork_lift_height <= 0 && forklift->fork_speed<0)){
          forklift->fork_speed = 0;
@@ -162,7 +164,7 @@ void stop_colliding_forklift(Forklift *forklift, double time){
     update_bounding_box(&(forklift->box), pos, forklift->body_turn_angle);
 }
 void set_fork_speed(Forklift *forklift, double speed){
-    forklift->fork_speed = speed;
+    if(forklift->is_fork_free_to_lower || speed>0) forklift->fork_speed = speed;
 }
 void switch_spotlight(Forklift *forklift){
     if(forklift->is_light_on) forklift->is_light_on=false;
@@ -199,4 +201,29 @@ void render_forklift(Forklift *forklift){
             draw_model(&(forklift->steer_model));
         glPopMatrix();
     glPopMatrix();
+}
+
+void reset_forklift(Forklift *forklift){
+    forklift->x = 0;
+    forklift->y = 0;
+    forklift->z = 0;
+    forklift->speed = 0;
+    forklift->speed_z = 0;
+    forklift->acceleration = 0;
+    forklift->body_turn_angle = 0;
+    forklift->body_turn_speed = 0;
+    forklift->r=0;
+    forklift->steer_angle = 0;
+    forklift->fork_speed=0;
+    forklift->fork_lift_height = 0;
+    forklift->is_light_on=false;
+    forklift->is_fork_free_to_lower=true;
+    float dimensions[] = {1.5f,3.28f, 3.2f};
+    float center[] = {0.0f, -1.07f,1.16f};
+    init_bounding_box(&(forklift->box), dimensions, center);
+    float fork_dimensions[]={0.7758f, 1.1125f, 0.055f};
+    float fork_center[]={0.0f, 1.12f, -0.2f};
+    init_bounding_box(&(forklift->fork_box), fork_dimensions, fork_center);
+    init_wheels(&(forklift->wheels));
+    init_light(&(forklift->spotlight));
 }

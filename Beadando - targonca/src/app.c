@@ -164,13 +164,20 @@ void handle_app_events(App* app)
                 change_camera_mode(&(app->camera));
                 break;
             case SDL_SCANCODE_I:
-                if(app->scene.is_manual_visible)
+                if(app->scene.is_manual_visible){
                     app->scene.is_manual_visible = false;
-                else app->scene.is_manual_visible = true;
+                    start_timer(&(app->scene.timer));
+                } else {
+                    app->scene.is_manual_visible = true;
+                    stop_timer(&(app->scene.timer));
+                }
                 break;
             case SDL_SCANCODE_L:
-               up_down_pallet(&(app->scene.pallet), &(app->scene.arena), app->scene.forklift.fork_lift_height < 0.001 ? true : false );
+               up_down_pallet(&(app->scene.pallet), &(app->scene.arena), app->scene.forklift.fork_lift_height < 0.001 ? true : false, &(app->scene.timer), &(app->scene.high_score));
                break;
+            case SDL_SCANCODE_X:
+                reset_scene(&(app->scene));
+                break;
             default:
                 break;
             }

@@ -5,6 +5,7 @@
 #include <obj/model.h>
 #include <GL/gl.h>
 #include "boundingbox.h"
+#include "timer.h"
 
 //raklap
 typedef struct Pallet{
@@ -25,6 +26,8 @@ typedef struct Pallet{
     bool is_lifted;
     //zold szinu-e: akkor az, ha emeleshez megfeleloen kozel van hozza a targonca
     bool is_green;
+    //lathato-e, rendereljuk-e
+    bool is_visible;
 } Pallet;
 
 //raklap adatok inicializalasa
@@ -34,5 +37,7 @@ void update_pallet(Pallet *pallet, float* pos, float angle);
 //raklap kirajzolasa, ha emelve van, akkor a letetel helyen is lesz egy teglalap
 void render_pallet(Pallet *pallet);
 //raklap felvetele, letevese (csak ha a villa megfelelo pozicioju es leteveskor nem kerul ki a raklap az arenabol)
-void up_down_pallet(Pallet *pallet, Bounding_box *arena, bool is_fork_down);
+void up_down_pallet(Pallet *pallet, Bounding_box *arena, bool is_fork_down, Timer *timer, Timer *hs);
+//visszateves kezdeti helyzetbe
+void reset_pallet(Pallet *pallet);
 #endif

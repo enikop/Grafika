@@ -15,6 +15,7 @@ void init_scene(Scene *scene)
     load_model(&(scene->buildings[1]), "assets/models/b2_ready.obj");
     load_model(&(scene->buildings[2]), "assets/models/b3.obj");
     load_model(&(scene->buildings[3]), "assets/models/b4_ready.obj");
+    load_model(&(scene->container), "assets/models/container.obj");
     scene->skybox_texture_id[0] = load_texture("assets/textures/sky.jpg");
     scene->skybox_texture_id[1] = load_texture("assets/textures/sky_dawn2.jpg");
     scene->skybox_texture_id[2] = load_texture("assets/textures/sky_night.jpg");
@@ -22,6 +23,7 @@ void init_scene(Scene *scene)
     scene->ground_texture_id = load_texture("assets/textures/beton.jpg");
     scene->grass_texture_id = load_texture("assets/textures/grass.jpg");
     scene->road_texture_id = load_texture("assets/textures/road.jpg");
+    scene->container_texture_id = load_texture("assets/textures/container.jpg");
     scene->instructions_texture_id=load_texture("assets/textures/instructions.jpg");
     scene->building_texture_ids[0]=load_texture("assets/textures/b1.jpg");
     scene->building_texture_ids[1]=load_texture("assets/textures/b2.jpg");
@@ -39,6 +41,17 @@ void init_scene(Scene *scene)
     float center[] = {-8.0f, 1.43f, 1.0f};
     init_bounding_box(&(scene->arena), dimensions, center);
     update_bounding_box(&(scene->arena), center, 0.0f);
+
+    float cont_dimensions[]={1.72f, 3.12f, 1.9f};
+    float cont_center[]={-19.8f, 0, 0.95f};
+    init_bounding_box(&(scene->container_box), cont_dimensions, cont_center);
+    update_bounding_box(&(scene->container_box), cont_center, 0.0f);
+
+    float timer_pos[] = {2.4f, -1.3f};
+    float hs_pos[] = {2.46f, -1.04f};
+    init_timer(&(scene->timer), 1, timer_pos);
+    init_timer(&(scene->high_score), 0.5, hs_pos);
+    read_high_score(&(scene->high_score));
 
     scene->material.ambient.red = 0.1;
     scene->material.ambient.green = 0.1;
@@ -187,6 +200,12 @@ void set_material(const Material *material)
 
     glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &(material->shininess));
 }
+
+void reset_scene(Scene *scene){
+    reset_pallet(&(scene->pallet));
+    reset_forklift(&(scene->forklift));
+    reset_timer(&(scene->timer));
+}
 void show_manual(Scene *scene)
 {
     glDisable(GL_LIGHTING);
@@ -227,25 +246,37 @@ void update_scene(Scene *scene, double time)
     update_forklift(&(scene->forklift), time, &(scene->pallet));
     float pos[]={scene->forklift.x, scene->forklift.y, scene->forklift.fork_lift_height};
     update_pallet(&(scene->pallet),pos, scene->forklift.body_turn_angle);
-    if(!is_inside(scene->arena, scene->forklift.box) || !is_inside(scene->arena, scene->forklift.fork_box) ){
+    if(!is_inside(scene->arena, scene->forklift.box) || !is_inside(scene->arena, scene->forklift.fork_box)  || is_colliding(scene->container_box,  scene->forklift.box) || (is_colliding(scene->container_box,  scene->forklift.fork_box) && scene->forklift.fork_lift_height<1.5)){
         stop_colliding_forklift(&(scene->forklift), time);
+    }else if(is_colliding(scene->container_box,  scene->forklift.fork_box)){
+        scene->forklift.is_fork_free_to_lower=false;
     }
     scene->skybox_angle+=scene->skybox_speed;
     if(scene->skybox_angle>=360) scene->skybox_angle=0;
     distance = pow(pow(scene->pallet.position[0]-scene->forklift.x, 2)+pow(scene->pallet.position[1]-scene->forklift.y, 2), 0.5);
-    if(distance<3 && !scene->pallet.is_lifted )scene->pallet.is_green=true;
+    if((distance<3 && !scene->pallet.is_lifted) || (is_colliding(scene->container_box, scene->pallet.box) && scene->pallet.is_lifted))scene->pallet.is_green=true;
     else scene->pallet.is_green=false;
-    if(!is_inside(scene->arena, scene->pallet.box)) scene->pallet.is_lifted = true;
+    if(!is_inside(scene->arena, scene->pallet.box) || is_colliding(scene->container_box, scene->pallet.box)) scene->pallet.is_lifted = true;
+    update_timer(&(scene->timer), time);
+
 }
 void render_scene(Scene *scene)
 {
     //draw_bounding_box(&(scene->forklift.box));
     //draw_bounding_box(&(scene->pallet.box));
+    //draw_bounding_box(&(scene->container_box));
     set_material(&(scene->material));
     set_lighting(scene);
     glCallList(scene->index_list_origin);
     glDisable(GL_CULL_FACE);
     glEnable(GL_LIGHTING);
+    glBindTexture(GL_TEXTURE_2D, scene->container_texture_id);
+    glEnable(GL_TEXTURE_2D);
+    glPushMatrix();
+        glTranslatef(-19.8f, 0, -0.451667f);
+        glRotatef(180, 0, 0,1);
+        draw_model(&(scene->container));
+    glPopMatrix();
     glPushMatrix();
         glTranslatef(10.0f, -10.0f, -0.5f);
        glCallList(scene->index_list_buildings);
@@ -269,6 +300,8 @@ void render_scene(Scene *scene)
     glEnable(GL_LIGHTING);
     render_forklift(&(scene->forklift));
     render_pallet(&(scene->pallet));
+    render_timer(&(scene->timer));
+    render_timer(&(scene->high_score));
     if(scene->is_manual_visible) show_manual(scene);
 }
 
