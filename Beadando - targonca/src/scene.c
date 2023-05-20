@@ -78,7 +78,7 @@ void init_scene(Scene *scene)
     scene->ambient_light[3] = 1.0f;
     scene->index_list_origin = glGenLists(1);
     glNewList(scene->index_list_origin, GL_COMPILE);
-    draw_origin();
+    //draw_origin();
     draw_terrain(scene);
     glEndList();
 

@@ -108,6 +108,37 @@ void handle_app_events(App* app)
     int y;
 
     while (SDL_PollEvent(&event)) {
+        if(app->scene.is_manual_visible){
+            set_camera_speed(&(app->camera), 0);
+            set_camera_side_speed(&(app->camera), 0);
+            set_camera_lift_speed(&(app->camera), 0);
+            app->scene.forklift.speed = 0;
+            set_forklift_acceleration(&(app->scene.forklift), 0);
+            set_turn_speed(&(app->scene.forklift.wheels), 0);
+            switch (event.type){
+            case SDL_KEYDOWN:
+                switch (event.key.keysym.scancode) {
+                case SDL_SCANCODE_I:
+                    if (app->scene.is_manual_visible) {
+                        app->scene.is_manual_visible = false;
+                        start_timer(&(app->scene.timer));
+                    }
+                    else{
+                        app->scene.is_manual_visible = true;
+                        stop_timer(&(app->scene.timer));
+                    }
+                    break;
+                default:
+                    break;
+                }
+                break;
+            case SDL_QUIT:
+                app->is_running = false;
+                break;
+            default:
+                break;
+            }
+        } else {
         switch (event.type) {
         case SDL_KEYDOWN:
             switch (event.key.keysym.scancode) {
@@ -230,7 +261,7 @@ void handle_app_events(App* app)
         default:
             break;
         }
-    }
+    }}
 }
 
 void update_app(App* app)
